@@ -263,7 +263,6 @@
     <ul class="options" id="optionList"></ul>
     <div class="footer-actions">
       <button class="btn ghost" id="shuffleBtn">Mezclar</button>
-      <button class="btn ghost" id="resetBtn">Restaurar</button>
     </div>
     <p class="hint">Pulsa <strong>Enter</strong> para añadir rápido. Mantén <strong>Shift</strong> al girar para eliminar al ganador (sorteo sin repetición).</p>
   </aside>
@@ -272,7 +271,7 @@
 (() => {
   "use strict";
 
-  const DEFAULTS = ["Andre", "Ezequiel", "Cesar", "Leo", "Fray", "Daniel", "Chala"];
+  const DEFAULTS = [];
   // Paleta de casino: oxblood / tinta alternados, separadores y texto en latón.
   const SEG_RED = "#9e2b20";
   const SEG_INK = "#1c1813";
@@ -292,7 +291,6 @@
   const inputStage = document.getElementById("newOptionStage");
   const addBtnStage = document.getElementById("addBtnStage");
   const shuffleBtn = document.getElementById("shuffleBtn");
-  const resetBtn = document.getElementById("resetBtn");
 
   let options = loadOptions();
   let currentRotation = 0;
@@ -300,13 +298,13 @@
 
   function loadOptions() {
     try {
-      const saved = JSON.parse(localStorage.getItem("ruleta_options_v3"));
+      const saved = JSON.parse(localStorage.getItem("ruleta_options_v4"));
       if (Array.isArray(saved) && saved.length) return saved;
     } catch (_) {}
     return [...DEFAULTS];
   }
   function saveOptions() {
-    try { localStorage.setItem("ruleta_options_v3", JSON.stringify(options)); } catch (_) {}
+    try { localStorage.setItem("ruleta_options_v4", JSON.stringify(options)); } catch (_) {}
   }
 
   function colorFor(i) { return i % 2 === 0 ? SEG_RED : SEG_INK; }
@@ -417,14 +415,6 @@
     drawWheel();
   }
 
-  function reset() {
-    options = [...DEFAULTS];
-    saveOptions();
-    renderList();
-    drawWheel();
-    winnerEl.textContent = "—";
-  }
-
   function easeOut(t) { return 1 - Math.pow(1 - t, 3); }
 
   function spin(removeWinner) {
@@ -478,7 +468,6 @@
   addBtnStage.addEventListener("click", () => addOption(inputStage));
   inputStage.addEventListener("keydown", (e) => { if (e.key === "Enter") addOption(inputStage); });
   shuffleBtn.addEventListener("click", shuffle);
-  resetBtn.addEventListener("click", reset);
 
   renderList();
   drawWheel();
