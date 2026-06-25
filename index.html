@@ -145,7 +145,6 @@
 
   /* ---------- Inputs y botones ---------- */
   .add-row { display: flex; gap: 0.5rem; }
-  .stage-add { width: min(72vw, 500px); }
 
   input[type="text"] {
     flex: 1; min-width: 0;
@@ -248,10 +247,6 @@
       <span class="label">Resultado</span>
       <span class="winner" id="winner">—</span>
     </div>
-    <div class="add-row stage-add">
-      <input type="text" id="newOptionStage" placeholder="Añadir un nombre a la ruleta..." maxlength="40" />
-      <button class="btn" id="addBtnStage">Añadir</button>
-    </div>
   </section>
 
   <aside class="panel">
@@ -288,8 +283,6 @@
   const countEl = document.getElementById("count");
   const input = document.getElementById("newOption");
   const addBtn = document.getElementById("addBtn");
-  const inputStage = document.getElementById("newOptionStage");
-  const addBtnStage = document.getElementById("addBtnStage");
   const shuffleBtn = document.getElementById("shuffleBtn");
 
   let options = loadOptions();
@@ -465,8 +458,6 @@
   spinBtn.addEventListener("click", (e) => spin(e.shiftKey));
   addBtn.addEventListener("click", () => addOption(input));
   input.addEventListener("keydown", (e) => { if (e.key === "Enter") addOption(input); });
-  addBtnStage.addEventListener("click", () => addOption(inputStage));
-  inputStage.addEventListener("keydown", (e) => { if (e.key === "Enter") addOption(inputStage); });
   shuffleBtn.addEventListener("click", shuffle);
 
   renderList();
