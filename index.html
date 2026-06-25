@@ -3,19 +3,19 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Ruleta de la Fortuna</title>
+<title>La Ruleta</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,900&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet" />
 <style>
   :root {
-    --bg: oklch(18% 0.03 265);
-    --bg-2: oklch(24% 0.05 280);
-    --surface: oklch(26% 0.04 270 / 0.7);
-    --border: oklch(70% 0.05 280 / 0.18);
-    --text: oklch(96% 0.01 270);
-    --muted: oklch(72% 0.02 270);
-    --accent: oklch(75% 0.18 50);
-    --accent-2: oklch(70% 0.17 330);
-    --danger: oklch(65% 0.2 25);
-    --ease: cubic-bezier(0.16, 1, 0.3, 1);
+    --paper: #ece1cd;
+    --cream: #f4ead6;
+    --ink: #1c1813;
+    --red: #9e2b20;
+    --brass: #b3893f;
+    --brass-2: #cda85d;
+    --line: #1c1813;
   }
 
   * { box-sizing: border-box; }
@@ -23,14 +23,13 @@
   body {
     margin: 0;
     min-height: 100vh;
-    font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
-    color: var(--text);
-    background:
-      radial-gradient(1200px 600px at 15% -10%, oklch(35% 0.12 300 / 0.55), transparent 60%),
-      radial-gradient(900px 500px at 110% 110%, oklch(40% 0.14 40 / 0.45), transparent 55%),
-      linear-gradient(160deg, var(--bg), var(--bg-2));
+    font-family: "Space Grotesk", system-ui, sans-serif;
+    color: var(--ink);
+    background-color: var(--paper);
+    background-image: radial-gradient(rgba(28, 24, 19, 0.07) 1px, transparent 1.4px);
+    background-size: 18px 18px;
     display: grid;
-    grid-template-columns: 1fr 360px;
+    grid-template-columns: 1fr 340px;
     gap: clamp(1.5rem, 3vw, 3rem);
     align-items: start;
     padding: clamp(1.5rem, 4vw, 3.5rem);
@@ -40,217 +39,209 @@
     body { grid-template-columns: 1fr; }
   }
 
-  header.title {
-    grid-column: 1 / -1;
-    display: flex;
-    align-items: baseline;
-    gap: 0.9rem;
-    flex-wrap: wrap;
-  }
+  /* ---------- Cabecera ---------- */
+  header.title { grid-column: 1 / -1; border-bottom: 3px solid var(--ink); padding-bottom: 1rem; }
   header.title h1 {
     margin: 0;
-    font-size: clamp(1.8rem, 1rem + 3vw, 3.2rem);
-    font-weight: 800;
-    letter-spacing: -0.03em;
-    background: linear-gradient(100deg, var(--accent), var(--accent-2));
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
+    font-family: "Fraunces", serif;
+    font-weight: 900;
+    font-size: clamp(2.6rem, 1rem + 6vw, 5.5rem);
+    line-height: 0.92;
+    letter-spacing: -0.02em;
+    text-transform: uppercase;
   }
+  header.title h1 em { font-style: italic; color: var(--red); }
   header.title p {
-    margin: 0;
-    color: var(--muted);
-    font-size: 0.95rem;
+    margin: 0.5rem 0 0;
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.35em;
+    color: var(--ink);
+    opacity: 0.65;
   }
 
-  .stage {
-    position: relative;
-    display: grid;
-    place-items: center;
-    gap: 1.5rem;
-  }
+  /* ---------- Escenario ---------- */
+  .stage { display: grid; place-items: center; gap: 1.6rem; }
 
-  .wheel-wrap {
-    position: relative;
-    width: min(70vw, 520px);
-    aspect-ratio: 1;
-  }
+  .wheel-wrap { position: relative; width: min(72vw, 500px); aspect-ratio: 1; }
 
-  /* Aguja / puntero */
   .pointer {
     position: absolute;
-    top: -6px;
+    top: -14px;
     left: 50%;
     transform: translateX(-50%);
     z-index: 5;
-    width: 0;
-    height: 0;
-    border-left: 20px solid transparent;
-    border-right: 20px solid transparent;
-    border-top: 38px solid var(--accent);
-    filter: drop-shadow(0 4px 6px rgba(0,0,0,0.5));
+    width: 0; height: 0;
+    border-left: 18px solid transparent;
+    border-right: 18px solid transparent;
+    border-top: 34px solid var(--brass);
+    filter: drop-shadow(0 2px 0 var(--ink));
+  }
+  .pointer::after {
+    content: "";
+    position: absolute;
+    top: -38px; left: -18px;
+    width: 0; height: 0;
+    border-left: 18px solid transparent;
+    border-right: 18px solid transparent;
+    border-top: 34px solid var(--ink);
+    z-index: -1;
+    transform: scale(1.18);
+    transform-origin: top center;
   }
 
   canvas {
-    width: 100%;
-    height: 100%;
+    width: 100%; height: 100%;
     border-radius: 50%;
     box-shadow:
-      0 0 0 12px oklch(30% 0.04 270 / 0.6),
-      0 0 0 16px oklch(78% 0.16 50 / 0.55),
-      0 30px 60px -15px rgba(0,0,0,0.6);
-    transition: transform 0.1s;
+      0 0 0 5px var(--ink),
+      0 0 0 12px var(--brass-2),
+      0 0 0 15px var(--ink),
+      14px 16px 0 rgba(28, 24, 19, 0.16);
   }
 
-  /* Botón central de giro */
   .hub {
     position: absolute;
-    top: 50%;
-    left: 50%;
+    top: 50%; left: 50%;
     transform: translate(-50%, -50%);
     z-index: 4;
-    width: 22%;
+    width: 23%;
     aspect-ratio: 1;
     border-radius: 50%;
-    border: none;
+    border: 3px solid var(--ink);
     cursor: pointer;
-    font-weight: 800;
-    font-size: clamp(0.8rem, 1.4vw, 1.05rem);
-    letter-spacing: 0.05em;
+    font-family: "Space Grotesk", sans-serif;
+    font-weight: 700;
+    font-size: clamp(0.75rem, 1.4vw, 1rem);
+    letter-spacing: 0.12em;
     text-transform: uppercase;
-    color: var(--bg);
-    background: radial-gradient(circle at 35% 30%, oklch(92% 0.06 80), var(--accent));
-    box-shadow: 0 8px 20px -6px rgba(0,0,0,0.6), inset 0 -4px 8px rgba(0,0,0,0.25);
-    transition: transform var(--ease) 0.25s, filter 0.2s;
+    color: var(--ink);
+    background: var(--brass-2);
+    box-shadow: 0 0 0 4px var(--cream), inset 0 -3px 0 rgba(28, 24, 19, 0.25);
+    transition: transform 0.18s cubic-bezier(0.16, 1, 0.3, 1), background 0.15s;
   }
-  .hub:hover:not(:disabled) { transform: translate(-50%, -50%) scale(1.06); }
-  .hub:active:not(:disabled) { transform: translate(-50%, -50%) scale(0.96); }
-  .hub:disabled { cursor: not-allowed; filter: grayscale(0.4) brightness(0.8); }
+  .hub:hover:not(:disabled) { background: var(--brass); transform: translate(-50%, -50%) scale(1.05); }
+  .hub:active:not(:disabled) { transform: translate(-50%, -50%) scale(0.95); }
+  .hub:disabled { cursor: not-allowed; opacity: 0.55; }
 
-  .result {
-    min-height: 3.4rem;
-    text-align: center;
-    display: grid;
-    place-items: center;
-    gap: 0.2rem;
+  .result { text-align: center; display: grid; place-items: center; gap: 0.25rem; min-height: 4rem; }
+  .result .label {
+    font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.3em; opacity: 0.6;
   }
-  .result .label { color: var(--muted); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.12em; }
   .result .winner {
-    font-size: clamp(1.5rem, 1rem + 2.5vw, 2.6rem);
-    font-weight: 800;
-    letter-spacing: -0.02em;
-    background: linear-gradient(100deg, var(--accent), var(--accent-2));
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-    transition: opacity 0.3s, transform 0.3s var(--ease);
+    font-family: "Fraunces", serif;
+    font-weight: 900;
+    font-style: italic;
+    font-size: clamp(1.8rem, 1rem + 3.5vw, 3.4rem);
+    line-height: 1;
+    color: var(--red);
   }
-  .result .winner.pop { animation: pop 0.5s var(--ease); }
+  .result .winner.pop { animation: pop 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
   @keyframes pop {
-    0% { transform: scale(0.6); opacity: 0; }
-    60% { transform: scale(1.12); }
+    0% { transform: scale(0.7) rotate(-3deg); opacity: 0; }
+    60% { transform: scale(1.08); }
     100% { transform: scale(1); opacity: 1; }
   }
 
-  /* Panel lateral */
+  /* ---------- Inputs y botones ---------- */
+  .add-row { display: flex; gap: 0.5rem; }
+  .stage-add { width: min(72vw, 500px); }
+
+  input[type="text"] {
+    flex: 1; min-width: 0;
+    padding: 0.7rem 0.85rem;
+    border: 2.5px solid var(--ink);
+    border-radius: 4px;
+    background: var(--cream);
+    color: var(--ink);
+    font-family: "Space Grotesk", sans-serif;
+    font-size: 0.95rem;
+  }
+  input[type="text"]::placeholder { color: rgba(28, 24, 19, 0.45); }
+  input[type="text"]:focus { outline: none; box-shadow: 4px 4px 0 var(--brass); }
+
+  button.btn {
+    border: 2.5px solid var(--ink);
+    border-radius: 4px;
+    padding: 0.7rem 1.1rem;
+    font-family: "Space Grotesk", sans-serif;
+    font-weight: 700;
+    font-size: 0.9rem;
+    cursor: pointer;
+    background: var(--red);
+    color: var(--cream);
+    box-shadow: 3px 3px 0 var(--ink);
+    transition: transform 0.12s, box-shadow 0.12s, background 0.12s;
+  }
+  button.btn:hover { transform: translate(-1px, -1px); box-shadow: 4px 4px 0 var(--ink); }
+  button.btn:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0 var(--ink); }
+  button.btn.ghost { background: var(--cream); color: var(--ink); }
+  button.btn.ghost:hover { background: var(--brass-2); }
+
+  /* ---------- Panel ---------- */
   .panel {
-    background: var(--surface);
-    backdrop-filter: blur(14px);
-    border: 1px solid var(--border);
-    border-radius: 20px;
-    padding: 1.4rem;
+    background: var(--cream);
+    border: 3px solid var(--ink);
+    border-radius: 6px;
+    box-shadow: 7px 7px 0 var(--ink);
+    padding: 1.3rem;
     display: flex;
     flex-direction: column;
     gap: 1rem;
   }
   .panel h2 {
     margin: 0;
-    font-size: 1rem;
+    font-family: "Fraunces", serif;
+    font-weight: 900;
+    font-size: 1.4rem;
     text-transform: uppercase;
-    letter-spacing: 0.1em;
-    color: var(--muted);
+    letter-spacing: 0.02em;
+  }
+  .panel h2 .count {
+    font-family: "Space Grotesk", sans-serif;
+    font-size: 0.7rem;
+    vertical-align: middle;
+    background: var(--ink);
+    color: var(--cream);
+    padding: 0.15rem 0.5rem;
+    border-radius: 999px;
+    margin-left: 0.4rem;
   }
 
-  .add-row { display: flex; gap: 0.5rem; }
-  .stage-add { width: min(70vw, 520px); }
-  input[type="text"] {
-    flex: 1;
-    min-width: 0;
-    padding: 0.65rem 0.8rem;
-    border-radius: 12px;
-    border: 1px solid var(--border);
-    background: oklch(20% 0.02 270 / 0.8);
-    color: var(--text);
-    font-size: 0.95rem;
-  }
-  input[type="text"]:focus {
-    outline: none;
-    border-color: var(--accent);
-    box-shadow: 0 0 0 3px oklch(75% 0.18 50 / 0.25);
-  }
-
-  button.btn {
-    border: none;
-    border-radius: 12px;
-    padding: 0.65rem 1rem;
-    font-weight: 700;
-    cursor: pointer;
-    color: var(--bg);
-    background: linear-gradient(100deg, var(--accent), var(--accent-2));
-    transition: transform 0.15s var(--ease), filter 0.15s;
-  }
-  button.btn:hover { transform: translateY(-2px); filter: brightness(1.08); }
-  button.btn:active { transform: translateY(0); }
-  button.btn.ghost {
-    background: transparent;
-    color: var(--muted);
-    border: 1px solid var(--border);
-  }
-  button.btn.ghost:hover { color: var(--text); border-color: var(--accent); }
-
-  ul.options { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.4rem; max-height: 320px; overflow-y: auto; }
+  ul.options { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.45rem; max-height: 330px; overflow-y: auto; }
   ul.options li {
-    display: flex;
-    align-items: center;
-    gap: 0.6rem;
-    padding: 0.5rem 0.65rem;
-    border-radius: 10px;
-    background: oklch(22% 0.02 270 / 0.6);
-    border: 1px solid transparent;
-    transition: border-color 0.15s;
+    display: flex; align-items: center; gap: 0.65rem;
+    padding: 0.5rem 0.6rem;
+    border: 2px solid var(--ink);
+    border-radius: 4px;
+    background: var(--paper);
   }
-  ul.options li:hover { border-color: var(--border); }
-  ul.options li .dot { width: 14px; height: 14px; border-radius: 50%; flex-shrink: 0; }
-  ul.options li .name { flex: 1; font-size: 0.92rem; word-break: break-word; }
+  ul.options li .dot { width: 16px; height: 16px; border-radius: 50%; border: 2px solid var(--ink); flex-shrink: 0; }
+  ul.options li .name { flex: 1; font-weight: 500; word-break: break-word; }
   ul.options li button {
-    border: none;
-    background: transparent;
-    color: var(--muted);
-    cursor: pointer;
-    font-size: 1.1rem;
-    line-height: 1;
-    padding: 0.1rem 0.3rem;
-    border-radius: 6px;
-    transition: color 0.15s, background 0.15s;
+    border: 2px solid var(--ink); background: var(--cream); color: var(--ink);
+    cursor: pointer; font-size: 1rem; line-height: 1; width: 26px; height: 26px;
+    border-radius: 4px; transition: background 0.12s, color 0.12s; flex-shrink: 0;
   }
-  ul.options li button:hover { color: var(--danger); background: oklch(65% 0.2 25 / 0.15); }
+  ul.options li button:hover { background: var(--red); color: var(--cream); }
 
   .footer-actions { display: flex; gap: 0.5rem; }
   .footer-actions .btn { flex: 1; }
 
-  .hint { color: var(--muted); font-size: 0.78rem; line-height: 1.4; }
+  .hint { font-size: 0.76rem; line-height: 1.5; opacity: 0.7; margin: 0; }
+  .hint strong { background: var(--brass-2); padding: 0 0.25rem; border-radius: 2px; }
 </style>
 </head>
 <body>
   <header class="title">
-    <h1>Ruleta de la Fortuna</h1>
-    <p>Añade tus opciones, gira y deja que la suerte decida.</p>
+    <h1>La <em>Ruleta</em></h1>
+    <p>Gira · La suerte decide · Juega con tus amigos</p>
   </header>
 
   <section class="stage">
     <div class="wheel-wrap">
       <div class="pointer"></div>
-      <canvas id="wheel" width="520" height="520"></canvas>
+      <canvas id="wheel" width="500" height="500"></canvas>
       <button class="hub" id="spinBtn">Girar</button>
     </div>
     <div class="result">
@@ -264,9 +255,9 @@
   </section>
 
   <aside class="panel">
-    <h2>Opciones</h2>
+    <h2>Nombres <span class="count" id="count">0</span></h2>
     <div class="add-row">
-      <input type="text" id="newOption" placeholder="Nueva opción..." maxlength="40" />
+      <input type="text" id="newOption" placeholder="Nuevo nombre..." maxlength="40" />
       <button class="btn" id="addBtn">Añadir</button>
     </div>
     <ul class="options" id="optionList"></ul>
@@ -274,7 +265,7 @@
       <button class="btn ghost" id="shuffleBtn">Mezclar</button>
       <button class="btn ghost" id="resetBtn">Restaurar</button>
     </div>
-    <p class="hint">Consejo: pulsa <strong>Enter</strong> para añadir rápido. El ganador se quita automáticamente solo si activas "modo eliminación" (mantén Shift al girar).</p>
+    <p class="hint">Pulsa <strong>Enter</strong> para añadir rápido. Mantén <strong>Shift</strong> al girar para eliminar al ganador (sorteo sin repetición).</p>
   </aside>
 
 <script>
@@ -282,11 +273,12 @@
   "use strict";
 
   const DEFAULTS = ["Andre", "Ezequiel", "Cesar", "Leo", "Fray", "Daniel", "Chala"];
-  const PALETTE = [
-    "#ff6b6b", "#feca57", "#48dbfb", "#1dd1a1", "#5f27cd",
-    "#ff9ff3", "#54a0ff", "#00d2d3", "#ff9f43", "#c8d6e5"
-  ];
-  const SPIN_DURATION = 5200; // ms
+  // Paleta de casino: oxblood / tinta alternados, separadores y texto en latón.
+  const SEG_RED = "#9e2b20";
+  const SEG_INK = "#1c1813";
+  const SEG_STROKE = "#cda85d";
+  const SEG_TEXT = "#f4ead6";
+  const SPIN_DURATION = 5200;
   const MIN_TURNS = 6;
 
   const canvas = document.getElementById("wheel");
@@ -294,6 +286,7 @@
   const spinBtn = document.getElementById("spinBtn");
   const winnerEl = document.getElementById("winner");
   const listEl = document.getElementById("optionList");
+  const countEl = document.getElementById("count");
   const input = document.getElementById("newOption");
   const addBtn = document.getElementById("addBtn");
   const inputStage = document.getElementById("newOptionStage");
@@ -302,43 +295,40 @@
   const resetBtn = document.getElementById("resetBtn");
 
   let options = loadOptions();
-  let currentRotation = 0; // radianes
+  let currentRotation = 0;
   let spinning = false;
 
-  // --- Persistencia ---
   function loadOptions() {
     try {
       const saved = JSON.parse(localStorage.getItem("ruleta_options_v3"));
       if (Array.isArray(saved) && saved.length) return saved;
-    } catch (_) { /* ignora datos corruptos */ }
+    } catch (_) {}
     return [...DEFAULTS];
   }
   function saveOptions() {
     try { localStorage.setItem("ruleta_options_v3", JSON.stringify(options)); } catch (_) {}
   }
 
-  function colorFor(i) { return PALETTE[i % PALETTE.length]; }
+  function colorFor(i) { return i % 2 === 0 ? SEG_RED : SEG_INK; }
 
-  // --- Dibujo de la rueda ---
   function drawWheel() {
     const size = canvas.width;
     const cx = size / 2, cy = size / 2, r = size / 2 - 6;
     ctx.clearRect(0, 0, size, size);
 
     if (options.length === 0) {
-      ctx.fillStyle = "#2a2a3a";
+      ctx.fillStyle = SEG_INK;
       ctx.beginPath();
       ctx.arc(cx, cy, r, 0, Math.PI * 2);
       ctx.fill();
-      ctx.fillStyle = "#aaa";
-      ctx.font = "20px system-ui";
+      ctx.fillStyle = SEG_TEXT;
+      ctx.font = "600 22px 'Space Grotesk', sans-serif";
       ctx.textAlign = "center";
-      ctx.fillText("Añade opciones", cx, cy);
+      ctx.fillText("Añade nombres", cx, cy);
       return;
     }
 
     const slice = (Math.PI * 2) / options.length;
-
     ctx.save();
     ctx.translate(cx, cy);
     ctx.rotate(currentRotation);
@@ -347,45 +337,49 @@
       const start = i * slice;
       const end = start + slice;
 
-      // sector
       ctx.beginPath();
       ctx.moveTo(0, 0);
       ctx.arc(0, 0, r, start, end);
       ctx.closePath();
       ctx.fillStyle = colorFor(i);
       ctx.fill();
-      ctx.strokeStyle = "rgba(0,0,0,0.18)";
-      ctx.lineWidth = 2;
+      ctx.strokeStyle = SEG_STROKE;
+      ctx.lineWidth = 3;
       ctx.stroke();
 
-      // texto
       ctx.save();
       ctx.rotate(start + slice / 2);
       ctx.textAlign = "right";
-      ctx.fillStyle = "#1a1a25";
-      ctx.font = `600 ${Math.max(12, Math.min(22, 280 / options.length + 8))}px system-ui`;
+      ctx.fillStyle = SEG_TEXT;
+      const fontSize = Math.max(13, Math.min(24, 280 / options.length + 9));
+      ctx.font = `700 ${fontSize}px 'Space Grotesk', sans-serif`;
       const text = opt.length > 18 ? opt.slice(0, 17) + "…" : opt;
-      ctx.fillText(text, r - 18, 6);
+      ctx.fillText(text, r - 20, 6);
       ctx.restore();
     });
+
+    // Aro central de latón
+    ctx.beginPath();
+    ctx.arc(0, 0, r * 0.16, 0, Math.PI * 2);
+    ctx.fillStyle = SEG_STROKE;
+    ctx.fill();
+    ctx.lineWidth = 3;
+    ctx.strokeStyle = SEG_INK;
+    ctx.stroke();
 
     ctx.restore();
   }
 
-  // --- Lista lateral ---
   function renderList() {
     listEl.innerHTML = "";
     options.forEach((opt, i) => {
       const li = document.createElement("li");
-
       const dot = document.createElement("span");
       dot.className = "dot";
       dot.style.background = colorFor(i);
-
       const name = document.createElement("span");
       name.className = "name";
       name.textContent = opt;
-
       const del = document.createElement("button");
       del.textContent = "×";
       del.title = "Eliminar";
@@ -395,14 +389,13 @@
         renderList();
         drawWheel();
       });
-
       li.append(dot, name, del);
       listEl.appendChild(li);
     });
+    countEl.textContent = options.length;
     spinBtn.disabled = options.length < 2 || spinning;
   }
 
-  // --- Añadir / mezclar / reset ---
   function addOption(inputEl) {
     const val = inputEl.value.trim();
     if (!val) return;
@@ -432,7 +425,6 @@
     winnerEl.textContent = "—";
   }
 
-  // --- Giro ---
   function easeOut(t) { return 1 - Math.pow(1 - t, 3); }
 
   function spin(removeWinner) {
@@ -444,24 +436,18 @@
 
     const slice = (Math.PI * 2) / options.length;
     const targetIndex = Math.floor(Math.random() * options.length);
-
-    // El puntero está arriba (-90° = -PI/2). Queremos que el centro del
-    // sector ganador quede bajo el puntero.
     const pointerAngle = -Math.PI / 2;
     const sliceCenter = targetIndex * slice + slice / 2;
     const baseTarget = pointerAngle - sliceCenter;
     const extraTurns = (MIN_TURNS + Math.random() * 2) * Math.PI * 2;
     const start = currentRotation % (Math.PI * 2);
     const finalRotation = baseTarget + extraTurns;
-
     const t0 = performance.now();
 
     function frame(now) {
-      const elapsed = now - t0;
-      const t = Math.min(elapsed / SPIN_DURATION, 1);
+      const t = Math.min((now - t0) / SPIN_DURATION, 1);
       currentRotation = start + (finalRotation - start) * easeOut(t);
       drawWheel();
-
       if (t < 1) {
         requestAnimationFrame(frame);
       } else {
@@ -470,9 +456,8 @@
         spinning = false;
         const winner = options[targetIndex];
         winnerEl.textContent = winner;
-        void winnerEl.offsetWidth; // reinicia animación
+        void winnerEl.offsetWidth;
         winnerEl.classList.add("pop");
-
         if (removeWinner && options.length > 2) {
           setTimeout(() => {
             options.splice(targetIndex, 1);
@@ -487,7 +472,6 @@
     requestAnimationFrame(frame);
   }
 
-  // --- Eventos ---
   spinBtn.addEventListener("click", (e) => spin(e.shiftKey));
   addBtn.addEventListener("click", () => addOption(input));
   input.addEventListener("keydown", (e) => { if (e.key === "Enter") addOption(input); });
@@ -496,9 +480,10 @@
   shuffleBtn.addEventListener("click", shuffle);
   resetBtn.addEventListener("click", reset);
 
-  // --- Init ---
   renderList();
   drawWheel();
+  // Redibuja cuando las fuentes terminan de cargar (para que el texto del canvas use Space Grotesk).
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(drawWheel);
 })();
 </script>
 </body>
